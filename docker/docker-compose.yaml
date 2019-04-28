@@ -1,0 +1,10 @@
+version: '3'
+services:
+  9cc:
+    build:
+      context: .
+    volumes:
+      - ../:/src/9cc
+    working_dir: /src/9cc
+    container_name: 9cc
+    tty: true
