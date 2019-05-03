@@ -56,6 +56,7 @@ void error(char *fmt, ...) {
 static Node *add();
 static Node *mul();
 static Node *term();
+static Node *unary();
 
 // 新しいノードを作成する
 // 左辺と右辺を受け取る2項演算子
@@ -92,7 +93,7 @@ Node *add() {
 
 // 左結合の演算子をパーズする
 Node *mul() {
-	Node *node = term();
+	Node *node = unary();
 
 	for (;;) {
 		if (consume('*'))
@@ -118,6 +119,15 @@ Node *term() {
 		return new_node_num(tokens[pos++].val);
 
 	error("数値でも開きカッコでもないトークンです: %s", tokens[pos].input);
+}
+
+Node *unary() {
+	if (consume('+'))
+		return term();
+	// -xを0-xに置き換える
+	if (consume('-'))
+		return new_node('-', new_node_num(0), term());
+	return term();
 }
 
 void gen(Node *node) {
